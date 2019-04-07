@@ -38,10 +38,10 @@ function setupProfiler() {
     element.setAttribute('id', '${id}');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,${encodeURIComponent(Profiler.callgrind())}');
     element.setAttribute('download', 'callgrind.out.${Game.time}');
-  
+
     element.style.display = 'none';
     document.body.appendChild(element);
-  
+
     element.click();
   }
 </script>
