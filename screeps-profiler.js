@@ -328,8 +328,10 @@ const Profiler = {
 
   prototypes: [
     { name: 'Game', val: Game },
+    { name: 'InterShardMemory', val: InterShardMemory },
     { name: 'Map', val: Game.map },
     { name: 'Market', val: Game.market },
+    // Memory
     { name: 'PathFinder', val: PathFinder },
     { name: 'RawMemory', val: RawMemory },
     { name: 'ConstructionSite', val: ConstructionSite },
@@ -341,6 +343,7 @@ const Profiler = {
     { name: 'CostMatrix', val: PathFinder.CostMatrix },
     { name: 'Resource', val: Resource },
     { name: 'Room', val: Room },
+    { name: 'Terrain', val: Room.Terrain },
     { name: 'RoomObject', val: RoomObject },
     { name: 'RoomPosition', val: RoomPosition },
     { name: 'RoomVisual', val: RoomVisual },
@@ -365,6 +368,7 @@ const Profiler = {
     { name: 'StructureTerminal', val: StructureTerminal },
     { name: 'StructureTower', val: StructureTower },
     { name: 'StructureWall', val: StructureWall },
+    { name: 'Tombstone', val: Tombstone }
   ],
 
   checkMapItem(functionName, map = Memory.profiler.map) {
