@@ -328,7 +328,7 @@ const Profiler = {
 
   prototypes: [
     { name: 'Game', val: Game },
-    { name: 'InterShardMemory', val: InterShardMemory },
+    // InterShardMemory
     { name: 'Map', val: Game.map },
     { name: 'Market', val: Game.market },
     // Memory
