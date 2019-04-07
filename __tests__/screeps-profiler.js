@@ -10,6 +10,7 @@ let Flag = undefined;
 let Mineral = undefined;
 let Nuke = undefined;
 let OwnedStructure = undefined;
+let PowerCreep = undefined;
 let Resource = undefined;
 let Room = undefined;
 let RoomObject = undefined;
@@ -251,6 +252,7 @@ function resetGlobals() {
   Nuke = {};
   OwnedStructure = {};
   PathFinder.CostMatrix = {};
+  PowerCreep = {};
   Resource = {};
   Room = {};
   Room.Terrain = {};

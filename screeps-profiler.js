@@ -339,6 +339,7 @@ const Profiler = {
     { name: 'Nuke', val: Nuke },
     { name: 'OwnedStructure', val: OwnedStructure },
     { name: 'CostMatrix', val: PathFinder.CostMatrix },
+    { name: 'PowerCreep', val: PowerCreep },
     { name: 'Resource', val: Resource },
     { name: 'Room', val: Room },
     { name: 'Terrain', val: Room.Terrain },
