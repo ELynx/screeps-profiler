@@ -1,4 +1,4 @@
-# Screeps Profiler [![Build Status](https://travis-ci.org/elynx/screeps-profiler.svg?branch=master)](https://travis-ci.org/elynx/screeps-profiler) [![Coverage Status](https://coveralls.io/repos/github/elynx/screeps-profiler/badge.svg)](https://coveralls.io/github/elynx/screeps-profiler)
+# Screeps Profiler [![Build Status](https://travis-ci.org/ELynx/screeps-profiler.svg?branch=master)](https://travis-ci.org/ELynx/screeps-profiler) [![Coverage Status](https://coveralls.io/repos/github/ELynx/screeps-profiler/badge.svg)](https://coveralls.io/github/ELynx/screeps-profiler)
 
 The Screeps Profiler is a library that helps to understand where your CPU is being spent in the game of [Screeps](https://screeps.com).
 
