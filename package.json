@@ -1,7 +1,7 @@
 {
   "name": "screeps-profiler",
-  "version": "2.0.1",
-  "description": "A profiler designed for use in the game of Screeps.",
+  "version": "2.0.2",
+  "description": "A profiler designed for use in the game of Screeps. Fork of a fork. See github for network.",
   "main": "screeps-profiler.js",
   "scripts": {
     "test": "npm run --silent lint && jest --coverage",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/screepers/screeps-profiler.git"
+    "url": "git+https://github.com/ELynx/screeps-profiler.git"
   },
   "keywords": [
     "screeps",
@@ -18,9 +18,9 @@
   "author": "Gary Borton <gdborton@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/screepers/screeps-profiler/issues"
+    "url": "https://github.com/ELynx/screeps-profiler/issues"
   },
-  "homepage": "https://github.com/screepers/screeps-profiler#readme",
+  "homepage": "https://github.com/ELynx/screeps-profiler#readme",
   "jest": {
     "coverageReporters": [
       "html",
