@@ -33,10 +33,10 @@ let StructureRampart = undefined;
 let StructureRoad = undefined;
 let StructureSpawn = undefined;
 let StructureStorage = undefined;
-let StructureTerminal  = undefined;
+let StructureTerminal = undefined;
 let StructureTower = undefined;
 let StructureWall = undefined;
-let Tombstone  = undefined;
+let Tombstone = undefined;
 
 let start = Date.now();
 resetGlobals(); // needs to be called before requiring the profiler.

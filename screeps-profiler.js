@@ -217,8 +217,6 @@ function profileObjectFunctions(object, label) {
     const originalFunction = objectToWrap[functionName];
     objectToWrap[functionName] = profileFunction(originalFunction, extendedLabel);
   });
-
-  return objectToWrap;
 }
 
 function profileFunction(fn, functionName) {
