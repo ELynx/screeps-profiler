@@ -1,5 +1,43 @@
 'use strict';
 
+var Game = undefined;
+var Memory = undefined;
+var PathFinder = undefined;
+var RawMemory = undefined;
+var ConstructionSite = undefined;
+var Creep = undefined;
+var Flag = undefined;
+var Mineral = undefined;
+var Nuke = undefined;
+var OwnedStructure = undefined;
+var Resource = undefined;
+var Room = undefined;
+var RoomObject = undefined;
+var RoomPosition = undefined;
+var RoomVisual = undefined;
+var Source = undefined;
+var Structure = undefined;
+var StructureContainer = undefined;
+var StructureController = undefined;
+var StructureExtension = undefined;
+var StructureExtractor = undefined;
+var StructureKeeperLair = undefined;
+var StructureLab = undefined;
+var StructureLink = undefined;
+var StructureNuker = undefined;
+var StructureObserver = undefined;
+var StructurePowerBank = undefined;
+var StructurePowerSpawn = undefined;
+var StructurePortal = undefined;
+var StructureRampart = undefined;
+var StructureRoad = undefined;
+var StructureSpawn = undefined;
+var StructureStorage = undefined;
+var StructureTerminal  = undefined;
+var StructureTower = undefined;
+var StructureWall = undefined;
+var Tombstone  = undefined;
+
 let start = Date.now();
 resetGlobals(); // needs to be called before requiring the profiler.
 const profiler = require('../screeps-profiler');
