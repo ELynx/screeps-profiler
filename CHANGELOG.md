@@ -1,3 +1,8 @@
+## 2.0.2
+
+- New: Update methods and objects.
+- Fix: Work in simulation.
+
 ## 2.0.1
 
  - Fix: `profiler.output()` will no longer throw when there are very few functions that have been profiled. ([#26](https://github.com/screepers/screeps-profiler/pull/26))
