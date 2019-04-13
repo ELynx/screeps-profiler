@@ -367,7 +367,7 @@ const Profiler = {
     { name: 'StructureTerminal', val: StructureTerminal },
     { name: 'StructureTower', val: StructureTower },
     { name: 'StructureWall', val: StructureWall },
-    { name: 'Tombstone', val: Tombstone }
+    { name: 'Tombstone', val: Tombstone },
   ],
 
   checkMapItem(functionName, map = Memory.profiler.map) {
