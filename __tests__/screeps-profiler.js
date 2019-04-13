@@ -212,11 +212,11 @@ function resetGlobals() {
   global.Mineral = {};
   global.Nuke = {};
   global.OwnedStructure = {};
-         PathFinder.CostMatrix = {};
+  PathFinder.CostMatrix = {};
   global.PowerCreep = {};
   global.Resource = {};
   global.Room = {};
-         Room.Terrain = {};
+  Room.Terrain = {};
   global.RoomObject = {};
   global.RoomPosition = {};
   global.RoomVisual = {};
