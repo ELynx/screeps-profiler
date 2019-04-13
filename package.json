@@ -28,11 +28,10 @@
     ]
   },
   "devDependencies": {
-    "coveralls": "x",
-    "eslint": "x",
-    "eslint-config-airbnb": "x",
-    "eslint-plugin-react": "x",
-    "eslint-plugin-jsx-a11y": "x",
-    "jest": "x"
+    "coveralls": "^2.13.1",
+    "eslint": "^2.2.0",
+    "eslint-config-airbnb": "^6.0.2",
+    "eslint-plugin-react": "^4.1.0",
+    "jest": "^20.0.4"
   }
 }
