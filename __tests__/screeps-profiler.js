@@ -192,7 +192,7 @@ describe('screeps-profiler', () => {
 });
 
 function resetGlobals() {
-  global.Game = {
+  Game = {
     cpu: {
       getUsed() {
         return Date.now() - start;
@@ -203,43 +203,43 @@ function resetGlobals() {
     map: {},
     market: {},
   };
-  global.Memory = {};
-  global.PathFinder = {};
-  global.RawMemory = {};
-  global.ConstructionSite = {};
-  global.Creep = {};
-  global.Flag = {};
-  global.Mineral = {};
-  global.Nuke = {};
-  global.OwnedStructure = {};
-         PathFinder.CostMatrix = {};
-  global.PowerCreep = {};
-  global.Resource = {};
-  global.Room = {};
-         Room.Terrain = {};
-  global.RoomObject = {};
-  global.RoomPosition = {};
-  global.RoomVisual = {};
-  global.Source = {};
-  global.Structure = {};
-  global.StructureContainer = {};
-  global.StructureController = {};
-  global.StructureExtension = {};
-  global.StructureExtractor = {};
-  global.StructureKeeperLair = {};
-  global.StructureLab = {};
-  global.StructureLink = {};
-  global.StructureNuker = {};
-  global.StructureObserver = {};
-  global.StructurePowerBank = {};
-  global.StructurePowerSpawn = {};
-  global.StructurePortal = {};
-  global.StructureRampart = {};
-  global.StructureRoad = {};
-  global.StructureSpawn = {};
-  global.StructureStorage = {};
-  global.StructureTerminal = {};
-  global.StructureTower = {};
-  global.StructureWall = {};
-  global.Tombstone = {};
+  Memory = {};
+  PathFinder = {};
+  RawMemory = {};
+  ConstructionSite = {};
+  Creep = {};
+  Flag = {};
+  Mineral = {};
+  Nuke = {};
+  OwnedStructure = {};
+  PathFinder.CostMatrix = {};
+  PowerCreep = {};
+  Resource = {};
+  Room = {};
+  Room.Terrain = {};
+  RoomObject = {};
+  RoomPosition = {};
+  RoomVisual = {};
+  Source = {};
+  Structure = {};
+  StructureContainer = {};
+  StructureController = {};
+  StructureExtension = {};
+  StructureExtractor = {};
+  StructureKeeperLair = {};
+  StructureLab = {};
+  StructureLink = {};
+  StructureNuker = {};
+  StructureObserver = {};
+  StructurePowerBank = {};
+  StructurePowerSpawn = {};
+  StructurePortal = {};
+  StructureRampart = {};
+  StructureRoad = {};
+  StructureSpawn = {};
+  StructureStorage = {};
+  StructureTerminal = {};
+  StructureTower = {};
+  StructureWall = {};
+  Tombstone = {};
 }
