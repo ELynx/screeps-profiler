@@ -71,6 +71,12 @@ describe('screeps-profiler', () => {
     });
 
     describe('registerObject', () => {
+      it('does not explode if non-existing object is added e.g. in sim', () => {
+        expect(() => {
+          profiler.registerObject(undefined);
+        }).not.toThrow();
+      });
+
       it('wraps each function on an object', () => {
         const myObject = {
           add,
@@ -128,6 +134,11 @@ describe('screeps-profiler', () => {
     describe('output', () => {
       it('does not explode if there are no profiled functions', () => {
         Game.profiler.profile(10);
+        expect(profiler.output).not.toThrow();
+      });
+
+      it('does not explode if there are no duration set', () => {
+        Game.profiler.profile();
         expect(profiler.output).not.toThrow();
       });
 
@@ -212,11 +223,11 @@ function resetGlobals() {
   global.Mineral = {};
   global.Nuke = {};
   global.OwnedStructure = {};
-  PathFinder.CostMatrix = {};
+  global.PathFinder.CostMatrix = {};
   global.PowerCreep = {};
   global.Resource = {};
   global.Room = {};
-  Room.Terrain = {};
+  global.Room.Terrain = {};
   global.RoomObject = {};
   global.RoomPosition = {};
   global.RoomVisual = {};
