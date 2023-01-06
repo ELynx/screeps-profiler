@@ -356,7 +356,7 @@ const Profiler = {
     { name: 'StructureExtension', val: StructureExtension },
     { name: 'StructureExtractor', val: StructureExtractor },
     { name: 'StructureFactory', val: StructureFactory },
-    { name: 'StructureInvaderCode', val: StructureInvaderCode },
+    { name: 'StructureInvaderCore', val: StructureInvaderCore },
     { name: 'StructureKeeperLair', val: StructureKeeperLair },
     { name: 'StructureLab', val: StructureLab },
     { name: 'StructureLink', val: StructureLink },
