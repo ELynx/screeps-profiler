@@ -471,6 +471,10 @@ module.exports = {
     hookUpPrototypes();
   },
 
+  disable() {
+    enabled = false;
+  },
+
   output: Profiler.output,
   callgrind: Profiler.callgrind,
 
