@@ -85,7 +85,7 @@ function setupMemory(profileType, duration, filter) {
 }
 
 function resetMemory() {
-  Memory.profiler = null;
+  Memory.profiler = undefined;
 }
 
 function overloadCPUCalc() {
