@@ -37,7 +37,7 @@ function setupProfiler() {
     element = document.createElement('a');
     element.setAttribute('id', '${id}');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,${encodeURIComponent(Profiler.callgrind())}');
-    element.setAttribute('download', 'callgrind.${Date.now().toISOString().slice(10)}.${Game.time}');
+    element.setAttribute('download', 'callgrind.${(new Date()).toISOString().slice(0, 10)}.${Game.time}');
 
     element.style.display = 'none';
     document.body.appendChild(element);
