@@ -28,6 +28,10 @@ function setupProfiler() {
       setupMemory('background', false, filter);
     },
     callgrind() {
+      if (!Memory.profiler || !Memory.profiler.enabledTick) {
+        return 'Profiler not active.'
+      }
+
       const id = `id${Math.random()}`;
       /* eslint-disable */
       const download = `
@@ -113,22 +117,24 @@ function wrapFunction(name, originalFunction) {
   function wrappedFunction() {
     if (Profiler.isProfiling()) {
       const nameMatchesFilter = name === getFilter();
-      const start = Game.cpu.getUsed();
       if (nameMatchesFilter) {
         depth++;
       }
       const curParent = parentFn;
       parentFn = name;
       let result;
+
+      const start = Game.cpu.getUsed()
       if (this && this.constructor === wrappedFunction) {
         // eslint-disable-next-line new-cap
         result = new originalFunction(...arguments);
       } else {
         result = originalFunction.apply(this, arguments);
       }
+      const end = Game.cpu.getUsed()
+
       parentFn = curParent;
       if (depth > 0 || !getFilter()) {
-        const end = Game.cpu.getUsed();
         Profiler.record(name, end - start, parentFn);
       }
       if (nameMatchesFilter) {
