@@ -261,40 +261,58 @@ const Profiler = {
     Memory.profiler.map['(root)'].subs['(tick)'].time = Memory.profiler.totalTime;
 
     let uCPU_action_total = 0;
+    let uCPU_wall_minus_action_total = 0;
 
     let body = '';
     for (const fnName of Object.keys(Memory.profiler.map)) {
       const fn = Memory.profiler.map[fnName];
 
-      const uCPU_action_outer = this.actions.has(fnName) ? ACTION_COST_SCALED * fn.calls : 0;
-      uCPU_action_total += uCPU_action_outer;
-
+      // wall time spent self, adjusted by callee loop
       let uCPU_wall_outer = fn.time * SCALE;
+
+      // cost for just calling this successfully
+      const uCPU_action_outer = this.actions.has(fnName) ? ACTION_COST_SCALED * fn.calls : 0;
+      // also go to total cost
+      uCPU_action_total += uCPU_action_outer;
 
       let callsBody = '';
       for (const callName of Object.keys(fn.subs)) {
         const call = fn.subs[callName];
 
-        const uCPU_action_inner = this.actions.has(callName) ? ACTION_COST_SCALED * call.calls : 0;
-        uCPU_action_total += uCPU_action_inner;
-
+        // wall time spent inside callee
         const uCPU_wall_inner = call.time * SCALE;
+        // adjust self time for caller
         uCPU_wall_outer -= uCPU_wall_inner;
 
-        callsBody += `cfn=${callName}\ncalls=${call.calls} 1\n1 ${Math.round(uCPU_wall_inner)} ${Math.round(uCPU_action_inner)}\n`;
+        // cost for just calling this successfully
+        const uCPU_action_inner = this.actions.has(callName) ? ACTION_COST_SCALED * call.calls : 0;
+        // also go to total cost
+        uCPU_action_total += uCPU_action_inner;
+
+        // cost for time spent without cost
+        const uCPU_wall_minus_action_inner = uCPU_wall_inner - uCPU_action_inner
+        // also go to total cost
+        uCPU_wall_minus_action_total += uCPU_wall_minus_action_inner
+
+        callsBody += `cfn=${callName}\ncalls=${call.calls} 1\n1 ${Math.round(uCPU_wall_inner)} ${Math.round(uCPU_action_inner)} ${Math.round(uCPU_wall_minus_action_inner)}\n`;
       }
 
-      body += `\nfn=${fnName}\n1 ${Math.round(uCPU_wall_outer)} ${Math.round(uCPU_action_outer)}\n${callsBody}`;
+        // cost for time spent without cost
+        const uCPU_wall_minus_action_outer = uCPU_wall_outer - uCPU_action_outer
+        // also go to total cost
+        uCPU_wall_minus_action_total += uCPU_wall_minus_action_outer
+
+      body += `\nfn=${fnName}\n1 ${Math.round(uCPU_wall_outer)} ${Math.round(uCPU_action_outer)} ${Math.round(uCPU_wall_minus_action_outer)}\n${callsBody}`;
     }
 
     const uCPU_wall_total = Memory.profiler.totalTime * SCALE;
 
-    const headerEv1 = 'event: uCPU_wall : uCPU total for call\n'
-    const headerEv2 = 'event: uCPU_action : uCPU for [A]action calls\n'
-    const headerEv3 = 'event: uCPU_wall_minus_action = uCPU_wall - uCPU_action : uCPU for call without [A]action cost\n'
-    const headerEvAll = 'events: uCPU_wall uCPU_action\n';
+    const headerEv1 = 'event: uCPU_wall : uCPU total\n'
+    const headerEv2 = 'event: uCPU_action : uCPU [A]action cost\n'
+    const headerEv3 = 'event: uCPU_wall_minus_action : uCPU without [A]action cost\n'
+    const headerEvAll = 'events: uCPU_wall uCPU_action uCPU_wall_minus_action\n';
 
-    const headerSummary = `summary: ${Math.round(uCPU_wall_total)} ${Math.round(uCPU_action_total)}\n`;
+    const headerSummary = `summary: ${Math.round(uCPU_wall_total)} ${Math.round(uCPU_action_total)} ${Math.round(uCPU_wall_minus_action_total)}\n`;
 
     return headerEv1 + headerEv2 + headerEv3 + headerEvAll + headerSummary + body;
   },
