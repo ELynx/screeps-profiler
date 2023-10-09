@@ -246,7 +246,11 @@ const Profiler = {
   },
 
   callgrind() {
+    const SCALE = 1000000;
+    const ACTION_COST_SCALED = 0.2 * SCALE;
+
     const elapsedTicks = Game.time - Memory.profiler.enabledTick + 1;
+
     Memory.profiler.map['(tick)'].calls = elapsedTicks;
     Memory.profiler.map['(tick)'].time = Memory.profiler.totalTime;
     Profiler.checkMapItem('(root)');
@@ -255,20 +259,45 @@ const Profiler = {
     Profiler.checkMapItem('(tick)', Memory.profiler.map['(root)'].subs);
     Memory.profiler.map['(root)'].subs['(tick)'].calls = elapsedTicks;
     Memory.profiler.map['(root)'].subs['(tick)'].time = Memory.profiler.totalTime;
-    let body = `events: ns\nsummary: ${Math.round(Memory.profiler.totalTime * 1000000)}\n`;
+
+    let uCPU_action_total = 0;
+
+    let body = '';
     for (const fnName of Object.keys(Memory.profiler.map)) {
       const fn = Memory.profiler.map[fnName];
+
+      let uCPU_wall_outer = fn.time * SCALE;
+      let uCPU_action_outer = this.actions.has(fnName) ? ACTION_COST_SCALED * fn.calls : 0;
+
       let callsBody = '';
-      let callsTime = 0;
       for (const callName of Object.keys(fn.subs)) {
         const call = fn.subs[callName];
-        const ns = Math.round(call.time * 1000000);
-        callsBody += `cfn=${callName}\ncalls=${call.calls} 1\n1 ${ns}\n`;
-        callsTime += call.time;
+
+        const uCPU_wall = Math.round(call.time * SCALE);
+        const uCPU_action = this.actions.has(callName) ? ACTION_COST_SCALED * call.calls : 0;
+        const uCPU_wall_minus_action = uCPU_wall - uCPU_action;
+
+        uCPU_action_total += uCPU_action;
+
+        uCPU_wall_outer -= uCPU_wall;
+        uCPU_action_outer -= uCPU_action;
+
+        callsBody += `cfn=${callName}\ncalls=${call.calls} 1\n1 ${Math.round(uCPU_wall)} ${Math.round(uCPU_action)} ${Math.round(uCPU_wall_minus_action)}\n`;
       }
-      body += `\nfn=${fnName}\n1 ${Math.round((fn.time - callsTime) * 1000000)}\n${callsBody}`;
+
+      uCPU_action_outer = Math.max(uCPU_action_outer, 0) // cannot be below 0 practically
+      const uCPU_wall_minus_action_outer = uCPU_wall_outer - uCPU_action_outer;
+
+      body += `\nfn=${fnName}\n1 ${Math.round(uCPU_wall_outer)} ${Math.round(uCPU_action_outer)} ${Math.round(uCPU_wall_minus_action_outer)}\n${callsBody}`;
     }
-    return body;
+
+    const uCPU_wall_total = Math.round(Memory.profiler.totalTime * SCALE);
+    const uCPU_wall_minus_action_total = uCPU_wall_total - uCPU_action_total;
+
+    const header1 = 'events: uCPU_wall uCPU_action uCPU_wall_minus_action\n';
+    const header2 = `summary: ${Math.round(uCPU_wall_total)} ${Math.round(uCPU_action_total)} ${Math.round(uCPU_wall_minus_action_total)}\n`;
+
+    return header1 + header2 + body
   },
 
   output(passedOutputLengthLimit) {
@@ -374,12 +403,129 @@ const Profiler = {
     { name: 'StructureRampart', val: StructureRampart },
     { name: 'StructureRoad', val: StructureRoad },
     { name: 'StructureSpawn', val: StructureSpawn },
+    // StructureSpawn.Spawning
     { name: 'StructureStorage', val: StructureStorage },
     { name: 'StructureTerminal', val: StructureTerminal },
     { name: 'StructureTower', val: StructureTower },
     { name: 'StructureWall', val: StructureWall },
-    { name: 'Tombstone', val: Tombstone },
+    { name: 'Tombstone', val: Tombstone }
   ],
+
+  actions: new Set([
+    'Game.notify',
+    'Market.cancelOrder',
+    'Market.changeOrderPrice',
+    'Market.createOrder',
+    'Market.deal',
+    'Market.extendOrder',
+    'ConstructionSite.remove',
+    'Creep.attack',
+    'Creep.attackController',
+    'Creep.build',
+    'Creep.claimController',
+    'Creep.dismantle',
+    'Creep.drop',
+    'Creep.generateSafeMode',
+    'Creep.harvest',
+    'Creep.heal',
+    'Creep.move',
+    'Creep.notifyWhenAttacked',
+    'Creep.pickup',
+    'Creep.rangedAttack',
+    'Creep.rangedHeal',
+    'Creep.rangedMassAttack',
+    'Creep.repair',
+    'Creep.reserveController',
+    'Creep.signController',
+    'Creep.suicide',
+    'Creep.transfer',
+    'Creep.upgradeController',
+    'Creep.withdraw',
+    'Flag.remove',
+    'Flag.setColor',
+    'Flag.setPosition',
+    'OwnedStructure.destroy',
+    'OwnedStructure.notifyWhenAttacked',
+    'PowerCreep.delete',
+    'PowerCreep.drop',
+    'PowerCreep.enableRoom',
+    'PowerCreep.move',
+    'PowerCreep.notifyWhenAttacked',
+    'PowerCreep.pickup',
+    'PowerCreep.renew',
+    'PowerCreep.spawn',
+    'PowerCreep.suicide',
+    'PowerCreep.transfer',
+    'PowerCreep.upgrade',
+    'PowerCreep.usePower',
+    'PowerCreep.withdraw',
+    'Room.createConstructionSite',
+    'Room.createFlag',
+    'RoomPosition.createConstructionSite',
+    'RoomPosition.createFlag',
+    'Structure.destroy',
+    'Structure.notifyWhenAttacked',
+    'StructureController.activateSafeMode',
+    'StructureController.unclaim',
+    'StructureExtension.destroy',
+    'StructureExtension.notifyWhenAttacked',
+    'StructureExtractor.destroy',
+    'StructureExtractor.notifyWhenAttacked',
+    'StructureFactory.destroy',
+    'StructureFactory.notifyWhenAttacked',
+    'StructureFactory.produce',
+    'StructureInvaderCore.destroy',
+    'StructureInvaderCore.notifyWhenAttacked',
+    'StructureKeeperLair.destroy',
+    'StructureKeeperLair.notifyWhenAttacked',
+    'StructureLab.destroy',
+    'StructureLab.notifyWhenAttacked',
+    'StructureLab.boostCreep',
+    'StructureLab.reverseReaction',
+    'StructureLab.runReaction',
+    'StructureLab.unboostCreep',
+    'StructureLink.destroy',
+    'StructureLink.notifyWhenAttacked',
+    'StructureLink.transferEnergy',
+    'StructureNuker.destroy',
+    'StructureNuker.notifyWhenAttacked',
+    'StructureNuker.launchNuke',
+    'StructureObserver.destroy',
+    'StructureObserver.notifyWhenAttacked',
+    'StructureObserver.observe',
+    'StructurePowerBank.destroy',
+    'StructurePowerBank.notifyWhenAttacked',
+    'StructurePowerSpawn.destroy',
+    'StructurePowerSpawn.notifyWhenAttacked',
+    'StructurePowerSpawn.processPower',
+    'StructurePortal.destroy',
+    'StructurePortal.notifyWhenAttacked',
+    'StructureRampart.destroy',
+    'StructureRampart.notifyWhenAttacked',
+    'StructureRampart.setPublic',
+    'StructureRoad.destroy',
+    'StructureRoad.notifyWhenAttacked',
+    'StructureSpawn.destroy',
+    'StructureSpawn.notifyWhenAttacked',
+    'StructureSpawn.createCreep',
+    'StructureSpawn.spawnCreep',
+    'StructureSpawn.recycleCreep',
+    'StructureSpawn.renewCreep',
+    // StructureSpawn.Spawning.cancel
+    // StructureSpawn.Spawning.setDirections
+    'StructureStorage.destroy',
+    'StructureStorage.notifyWhenAttacked',
+    'StructureTerminal.destroy',
+    'StructureTerminal.notifyWhenAttacked',
+    'StructureTerminal.send',
+    'StructureTower.destroy',
+    'StructureTower.notifyWhenAttacked',
+    'StructureTower.heal',
+    'StructureTower.attack',
+    'StructureTower.repair',
+    'StructureWall.destroy',
+    'StructureWall.notifyWhenAttacked'
+  ]),
 
   checkMapItem(functionName, map = Memory.profiler.map) {
     if (!map[functionName]) {
