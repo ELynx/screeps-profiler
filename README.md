@@ -130,7 +130,13 @@ Avg: 13.54 Total: 2707.90 Ticks: 200 Est. Bucket (20 limit): 1774
 
 ![KCachegrind screenshot](callgrind.jpg)
 
-**Note:** In callgrind format time will be saved in nanoseconds. `1 Screeps CPU unit = 1 ms = 1'000'000 ns`.
+**Note:** In callgrind format time will be saved in micro CPUs, abbreviated as uCPU. `1 Screeps CPU unit = 1'000'000 uCPU`.
+
+There are standalone time and count measurements done:
+
+- uCPU_wall is CPU usage measured before and after doing the call.
+- uCPU_action is *only* additional CPU cost for actions / intents. In documentation, these methods are marked with `[A]` symbol and said to have 0.2 CPU cost per call that returns OK.
+- uCPU_wall_minus_action is difference between wall CPU and additional cost. Can be used to determine how much the code actually takes to run.
 
 ## Registering additional code
 
