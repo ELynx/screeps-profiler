@@ -308,11 +308,12 @@ const Profiler = {
     const uCPU_wall_minus_action_total = uCPU_wall_total - uCPU_action_total;
 
     const headerFormat = '# callgrind format\n';
-    const headerEv1 = 'event: uCPU_wall : uCPU total\n';
-    const headerEv2 = 'event: uCPU_action : uCPU [A]action cost\n';
-    const headerEv3 = 'event: uCPU_wall_minus_action : uCPU without [A]action cost\n';
-    const headerEv4 = 'event: NOKs : [A]actions that returned !== OK\n';
-    const headerEvAll = 'events: uCPU_wall uCPU_action uCPU_wall_minus_action NOKs\n';
+    // it seems bug in q(k)cachegrind forces that event names start with different letters
+    const headerEv1 = 'event: a_uCPU : uCPU total\n';
+    const headerEv2 = 'event: b_uCPU : uCPU [A]action cost\n';
+    const headerEv3 = 'event: c_uCPU : uCPU without [A]action cost\n';
+    const headerEv4 = 'event: d_NOKs : [A]actions that returned !== OK\n';
+    const headerEvAll = 'events: a_uCPU b_uCPU c_uCPU d_NOKs\n';
 
     const headerSummary = `summary: ${Math.round(uCPU_wall_total)} ${Math.round(uCPU_action_total)} ${Math.round(uCPU_wall_minus_action_total)} ${NOKs_total}\n`;
 
