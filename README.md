@@ -141,7 +141,7 @@ There are standalone time and count measurements done:
 
 Self / exclusive values are visualised well, inclusive works best for wall CPU, to extent for difference. Action CPU and NOKs are self / exclusive, because it requires to have full tree build.
 
-On Windows, you can use [QCacheGrind](https://sourceforge.net/projects/qcachegrindwin/) to visualise the profiling result. That requires MSVC 2010 x86 redistributable, and download links in readme are outdated. But you can get an official compatible redistributable [here](https://www.microsoft.com/en-us/download/details.aspx?id=26999).
+On Windows, you can use [QCacheGrind](https://sourceforge.net/projects/qcachegrindwin) to visualise the profiling result. That requires MSVC 2010 x86 redistributable, and download links in readme are outdated. But you can get an official compatible redistributable [here](https://www.microsoft.com/en-us/download/details.aspx?id=26999).
 
 ## Registering additional code
 
