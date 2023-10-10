@@ -135,7 +135,7 @@ function wrapFunction(name, originalFunction) {
 
       parentFn = curParent;
       if (depth > 0 || !getFilter()) {
-        Profiler.record(name, end - start, parentFn);
+        Profiler.record(name, end - start, result, parentFn);
       }
       if (nameMatchesFilter) {
         depth--;
@@ -246,6 +246,8 @@ const Profiler = {
   },
 
   callgrind() {
+    const POS = 1; // very fake, but improves readability
+
     const SCALE = 1000000;
     const ACTION_COST_SCALED = 0.2 * SCALE;
 
@@ -261,60 +263,60 @@ const Profiler = {
     Memory.profiler.map['(root)'].subs['(tick)'].time = Memory.profiler.totalTime;
 
     let uCPU_action_total = 0;
-    let uCPU_wall_minus_action_total = 0;
+    let NOKs_total = 0;
 
     let body = '';
     for (const fnName of Object.keys(Memory.profiler.map)) {
       const fn = Memory.profiler.map[fnName];
-
-      // wall time spent self, adjusted by callee loop
+      const isAction_outer = this.actions.has(fnName);
+      // exclusive costs
+      // wall time
       let uCPU_wall_outer = fn.time * SCALE;
-
-      // cost for just calling this successfully
-      const uCPU_action_outer = this.actions.has(fnName) ? ACTION_COST_SCALED * fn.calls : 0;
-      // also go to total cost
+      // cost for [A]ction call that returns OK
+      const uCPU_action_outer = isAction_outer ? (ACTION_COST_SCALED * fn.OKs) : 0;
       uCPU_action_total += uCPU_action_outer;
+      // number of [A]ction calls that returns NOK
+      const NOKs_outer = isAction_outer ? (fn.calls - fn.OKs) : 0;
+      NOKs_total += NOKs_outer;
 
       let callsBody = '';
       for (const callName of Object.keys(fn.subs)) {
         const call = fn.subs[callName];
-
-        // wall time spent inside callee
+        const isAction_inner = this.actions.has(callName);
+        // costs added to caller for inclusive costs
+        // wall time
         const uCPU_wall_inner = call.time * SCALE;
-        // adjust self time for caller
+        // decrease exclusive wall time for caller, since profiler measured inclusive time
         uCPU_wall_outer -= uCPU_wall_inner;
-
-        // cost for just calling this successfully
-        const uCPU_action_inner = this.actions.has(callName) ? ACTION_COST_SCALED * call.calls : 0;
-        // also go to total cost
-        uCPU_action_total += uCPU_action_inner;
-
-        // cost for time spent without cost
+        // cost for [A]ction call that returns OK
+        const uCPU_action_inner = isAction_inner ? (ACTION_COST_SCALED * call.OKs) : 0;
+        // delta between wall time and [A]ction cost
         const uCPU_wall_minus_action_inner = uCPU_wall_inner - uCPU_action_inner
-        // also go to total cost
-        uCPU_wall_minus_action_total += uCPU_wall_minus_action_inner
+        // number of [A]ction calls that returns NOK
+        const NOKs_inner = isAction_inner ? (call.calls - call.OKs) : 0;
 
-        callsBody += `cfn=${callName}\ncalls=${call.calls} 1\n1 ${Math.round(uCPU_wall_inner)} ${Math.round(uCPU_action_inner)} ${Math.round(uCPU_wall_minus_action_inner)}\n`;
+        callsBody += `cfn=${callName}\ncalls=${call.calls} ${POS}\n${POS} ${Math.round(uCPU_wall_inner)} ${Math.round(uCPU_action_inner)} ${Math.round(uCPU_wall_minus_action_inner)} ${NOKs_inner}\n`;
       }
 
-        // cost for time spent without cost
-        const uCPU_wall_minus_action_outer = uCPU_wall_outer - uCPU_action_outer
-        // also go to total cost
-        uCPU_wall_minus_action_total += uCPU_wall_minus_action_outer
+      // delta between wall time and [A]ction cost
+      const uCPU_wall_minus_action_outer = uCPU_wall_outer - uCPU_action_outer
 
-      body += `\nfn=${fnName}\n1 ${Math.round(uCPU_wall_outer)} ${Math.round(uCPU_action_outer)} ${Math.round(uCPU_wall_minus_action_outer)}\n${callsBody}`;
+      body += `\nfn=${fnName}\n${POS} ${Math.round(uCPU_wall_outer)} ${Math.round(uCPU_action_outer)} ${Math.round(uCPU_wall_minus_action_outer)} ${NOKs_outer}\n${callsBody}`;
     }
 
     const uCPU_wall_total = Memory.profiler.totalTime * SCALE;
+    const uCPU_wall_minus_action_total = uCPU_wall_total - uCPU_action_total;
 
-    const headerEv1 = 'event: uCPU_wall : uCPU total\n'
-    const headerEv2 = 'event: uCPU_action : uCPU [A]action cost\n'
-    const headerEv3 = 'event: uCPU_wall_minus_action : uCPU without [A]action cost\n'
-    const headerEvAll = 'events: uCPU_wall uCPU_action uCPU_wall_minus_action\n';
+    const headerFormat = '# callgrind format\n';
+    const headerEv1 = 'event: uCPU_wall : uCPU total\n';
+    const headerEv2 = 'event: uCPU_action : uCPU [A]action cost\n';
+    const headerEv3 = 'event: uCPU_wall_minus_action : uCPU without [A]action cost\n';
+    const headerEv4 = 'event: NOKs : [A]actions that returned !== OK\n';
+    const headerEvAll = 'events: uCPU_wall uCPU_action uCPU_wall_minus_action NOKs\n';
 
-    const headerSummary = `summary: ${Math.round(uCPU_wall_total)} ${Math.round(uCPU_action_total)} ${Math.round(uCPU_wall_minus_action_total)}\n`;
+    const headerSummary = `summary: ${Math.round(uCPU_wall_total)} ${Math.round(uCPU_action_total)} ${Math.round(uCPU_wall_minus_action_total)} ${NOKs_total}\n`;
 
-    return headerEv1 + headerEv2 + headerEv3 + headerEvAll + headerSummary + body;
+    return headerFormat + headerEv1 + headerEv2 + headerEv3 + headerEv4 + headerEvAll + headerSummary + body;
   },
 
   output(passedOutputLengthLimit) {
@@ -550,20 +552,24 @@ const Profiler = {
       map[functionName] = {
         time: 0,
         calls: 0,
+        OKs: 0,
         subs: {},
       };
     }
   },
 
-  record(functionName, time, parent) {
+  record(functionName, time, result, parent) {
+    const OKs = (result === 0) ? 1 : 0;
     this.checkMapItem(functionName);
-    Memory.profiler.map[functionName].calls++;
     Memory.profiler.map[functionName].time += time;
+    Memory.profiler.map[functionName].calls++;
+    Memory.profiler.map[functionName].OKs += OKs;
     if (parent) {
       this.checkMapItem(parent);
       this.checkMapItem(functionName, Memory.profiler.map[parent].subs);
-      Memory.profiler.map[parent].subs[functionName].calls++;
       Memory.profiler.map[parent].subs[functionName].time += time;
+      Memory.profiler.map[parent].subs[functionName].calls++;
+      Memory.profiler.map[parent].subs[functionName].OKs += OKs;
     }
   },
 
