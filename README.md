@@ -134,12 +134,12 @@ Avg: 13.54 Total: 2707.90 Ticks: 200 Est. Bucket (20 limit): 1774
 
 There are standalone time and count measurements done:
 
-- CPU usage measured before and after doing the call ("wall").
-- *Only* additional CPU cost for actions / intents. In documentation, these methods are marked with `[A]` symbol and said to have 0.2 CPU cost per call that returns OK.
-- Difference between wall CPU and additional cost. Can be used to determine how much the code actually takes to run.
-- NOKs is Actions / intents that returned not OK (technically, `result !== 0` where result is whatever function returned).
+- wall_uCPU: CPU usage measured before and after doing the call ("wall").
+- action_uCPU: *Only* additional CPU cost for actions / intents. In documentation, these methods are marked with `[A]` symbol and said to have 0.2 CPU cost per call that returns OK.
+- delta_uCPU: Difference between wall CPU and additional cost. Can be used to determine how much the code actually takes to run.
+- NOKs: NOKs is Actions / intents that returned not OK.
 
-Self / exclusive values are visualised well, inclusive works best for wall CPU, to extent for difference. Action CPU and NOKs are self / exclusive, because it requires to have full tree build.
+Ttechnically, OK is `result === 0` where result is whatever function returned.
 
 On Windows, you can use [QCacheGrind](https://sourceforge.net/projects/qcachegrindwin) to visualise the profiling result. That requires MSVC 2010 x86 redistributable, and download links in readme are outdated. But you can get an official compatible redistributable [here](https://www.microsoft.com/en-us/download/details.aspx?id=26999).
 
