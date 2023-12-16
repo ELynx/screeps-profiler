@@ -33,7 +33,8 @@ function setupProfiler() {
     },
     callgrind() {
       if (!Memory.profiler || !Memory.profiler.enabledTick) {
-        return 'Profiler not active.'
+        console.log('Profiler not active.')
+        return
       }
 
       const id = `id${Math.random()}`;
