@@ -1,3 +1,6 @@
+/* global Game */
+/* global Memory */
+
 'use strict';
 
 const ROOT_NAME = '(root)';
