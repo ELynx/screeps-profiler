@@ -724,6 +724,19 @@ module.exports = {
     enabled = false;
   },
 
+  registerAction(actionName) {
+    actions.add(actionName)
+  },
+
+  deregisterAction(exActionName) {
+    actions.delete(exActionName)
+  },
+
+  replaceAction(exActionName, actionName) {
+    actions.delete(exActionName)
+    actions.add(actionName)
+  },
+
   output: Profiler.output,
   callgrind: Profiler.callgrind,
 

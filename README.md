@@ -186,6 +186,18 @@ getAllScouts = profiler.registerFN(getAllScouts, 'mySemiOptionalName');
 
 **Note:** The second param is optional if you pass a named function `function x() {}`, but required if you pass an anonymous function `var x = function(){}`.
 
+## (De)registering actions
+
+Useful when you override prototypes that are action. E.g. `Creep.prototype.move` -> `Creep.prototype.__original__move(); Creep.prototype.move = ... calls __original__move`.
+Doing so without telling profiler action is now named differently results in broken "CPU without action cost" measurements. So, to remedy situation above:
+
+```javascript
+Game.profiler.deregisterAction('Creep.move')
+Game.profiler.registerAction('Creep.__original__move')
+```
+
+or short `Game.profiler.replaceAction('Creep.move', 'Creep.__original__move')`.
+
 ## Potential Overhead
 
 There is some work to setting up the functions for profiling.  While this work is kept to a minimum when the profiler is not in use, it may be beneficial to comment out or remove the `profiler.enable()` call when you know you aren't going to be using it.  This will revert the monkey patched functions to their original functions.
